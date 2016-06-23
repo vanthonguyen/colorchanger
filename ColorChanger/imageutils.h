@@ -1,6 +1,7 @@
 #ifndef IMAGEUTILS_H
 #define IMAGEUTILS_H
 #include <opencv2/core/core.hpp>
+#include <QDebug>
 
 class ImageUtils{
 public:
@@ -20,7 +21,7 @@ public:
           case QImage::Format_RGB888:
           {
              if ( !inCloneImageData )
-                qWarning() << "ASM::QImageToCvMat() - Conversion requires cloning since we use a temporary QImage";
+                qWarning() << "ImageUtils.h - Conversion requires cloning since we use a temporary QImage";
 
              QImage   swapped = inImage.rgbSwapped();
 
@@ -36,14 +37,14 @@ public:
           }
 
           default:
-             qWarning() << "ASM::QImageToCvMat() - QImage format not handled in switch:" << inImage.format();
+             qWarning() << "ImageUtils.h - QImage format not handled in switch:" << inImage.format();
              break;
        }
 
        return cv::Mat();
     }
 
-    static    inline QImage  cvMatToQImage( const cv::Mat &inMat )
+    static inline QImage  cvMatToQImage( const cv::Mat &inMat )
     {
        switch ( inMat.type() )
        {
@@ -83,13 +84,66 @@ public:
           }
 
           default:
-             qWarning() << "ASM::cvMatToQImage() - cv::Mat image type not handled in switch:" << inMat.type();
+             qWarning() << "ImageUtil.h - cv::Mat image type not handled in switch:" << inMat.type();
              break;
        }
 
        return QImage();
     }
+    static double hsvCompare(cv::Vec3b c1, cv::Vec3b c2 ){
+        double distH = 0;
+        //Hue
+        if(c1.val[0] > c2.val[0]){
+            distH = std::min(c1.val[0] - c2.val[0], c2.val[0] - c1.val[0] + 360);
+        }else{
+            distH = std::min(c2.val[0] - c1.val[0] , c1.val[0] - c2.val[0] + 360);
+        }
+        distH /= 360;
 
+        double distS = c1.val[1] - c2.val[1];
+        double distV = c1.val[2] - c2.val[2];
+        return std::sqrt(distH * distH + distS * distS + distV * distV);
+    }
+
+    static double distanceHsvL1(cv::Vec3b c1, cv::Vec3b c2 ){
+//        double distH = 0;
+//        //Hue
+//        if(c1.val[0] > c2.val[0]){
+//            distH = std::min(c1.val[0] - c2.val[0], c2.val[0] - c1.val[0] + 360);
+//        }else{
+//            distH = std::min(c2.val[0] - c1.val[0] , c1.val[0] - c2.val[0] + 360);
+//        }
+//        distH /= 360;
+        double distH = std::abs(c1.val[0] - c2.val[0]);
+        double distS = std::abs(c1.val[1] - c2.val[1]);
+        double distV = std::abs(c1.val[2] - c2.val[2]);
+        return distH + distS + distV;
+    }
+
+    static double distanceHs(cv::Vec3b c1, cv::Vec3b c2 ){
+        double distH = c1.val[0] - c2.val[0];
+        double distS = c1.val[1] - c2.val[1];
+        return std::sqrt(distH * distH + distS * distS);
+    }
+    static double distanceHsL1(cv::Vec3b c1, cv::Vec3b c2 ){
+        double distH = std::abs(c1.val[0] - c2.val[0]);
+        double distS = std::abs(c1.val[1] - c2.val[1]);
+        return distH + distS;
+    }
+    static double distanceH(cv::Vec3b c1, cv::Vec3b c2 ){
+        double distH = 0;
+        //Hue
+        if(c1.val[0] > c2.val[0]){
+            distH = std::min(c1.val[0] - c2.val[0], c2.val[0] - c1.val[0] + 360);
+        }else{
+            distH = std::min(c2.val[0] - c1.val[0] , c1.val[0] - c2.val[0] + 360);
+        }
+        distH /= 360;
+
+        double distS = c1.val[1] - c2.val[1];
+        double distV = c1.val[2] - c2.val[2];
+        return distH;
+    }
 };
 
 #endif // IMAGEUTILS_H

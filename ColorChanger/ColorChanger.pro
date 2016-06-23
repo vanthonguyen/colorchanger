@@ -18,12 +18,14 @@ INCLUDEPATH += $$system( pkg-config --cflags opencv )
 SOURCES += main.cpp\
         colorchanger.cpp \
     imagelabel.cpp \
-    colorhsv.cpp
+    colorhsv.cpp \
+    pointhsv.cpp
 
 HEADERS  += colorchanger.h \
     imagelabel.h \
     imageutils.h \
-    colorhsv.h
+    colorhsv.h \
+    pointhsv.h
 
 FORMS    += colorchanger.ui
 

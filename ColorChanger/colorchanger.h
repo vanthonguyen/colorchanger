@@ -4,9 +4,13 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QScrollArea>
+#include <QSlider>
 
 #include <opencv2/core/core.hpp>
 #include "imagelabel.h"
+
+#define MAX_PIXELS 40000
+#define SCAN_RADIUS 10
 
 namespace Ui {
 class ColorChanger;
@@ -22,19 +26,34 @@ public:
 
 public slots:
     void openFile();
+    void saveImage();
+    void updateThreshold(int th);
+    void updateNbPixel(int newNb);
     void changeColor(QPoint p);
-
-private slots:
-    void on_btnOpen_clicked();
+    void showColorLabel(QPoint p);
+    void chooseColor();
 
 private:
     QImage      mRenderQtImg;           /// Qt image to be rendered
-    QImage      mResizedImg;
-    cv::Mat     mOrigImage; /// original OpenCV image to be shown
+    QImage      mchangedImg;
+    cv::Mat     mImage; /// original OpenCV image to be shown
+    cv::Mat     mHsvImage;
+    cv::Mat     mHsvChangedImage;
+    cv::Vec3b   newColor;
+    int         mNbPixel;
+    double      mThreshold;
+    //for undo
+    //std::vector<>
 
     Ui::ColorChanger *ui;
     ImageLabel *imageLabel;
     QScrollArea *scrollArea;
+    QSlider      *thresholdSlider;
+    QSlider      *nbPixelSlider;
+    QLabel      *thresholdLabel;
+    QLabel      *nbPixelLabel;
+    QLabel      *debugLabel;
+
 };
 
 #endif // COLORCHANGER_H

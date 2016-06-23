@@ -13,7 +13,8 @@ public slots:
     void setFactor(const double &factor);
 
 signals:
-    void pixelSelected( const QPoint& );
+    void pixelSelected(QPoint);
+    void showColor(QPoint);
 
 
 private:

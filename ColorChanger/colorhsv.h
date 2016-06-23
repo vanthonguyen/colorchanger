@@ -2,21 +2,26 @@
 #define COLORHSV_H
 
 
-class ColorHSV
-{
+class ColorHSV{
 public:
-    ColorHSV() : h(0), s(0), v(0);
-    ColorHSV(double hh, double ss, double vv) : h(hh), s(ss), v(vv);
-    double distance();
-    public getH();
-    public getS();
-    public getV();
-}
+    ColorHSV() : h(0), s(0), v(0){
+    }
+
+    ColorHSV(double hh, double ss, double vv) : h(hh), s(ss), v(vv){
+    }
+
+    double distance(ColorHSV other);
+    double getH();
+    double getS();
+    double getV();
+    double getD() const;
+    void setD(double dd);
 
 private:
     double h;
     double s;
     double v;
+    double d;
 };
 
 #endif // COLORHSV_H
